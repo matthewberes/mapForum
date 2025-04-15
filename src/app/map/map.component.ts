@@ -45,6 +45,7 @@ export class MapComponent implements AfterViewInit {
     this.map.on("click", (e: any) => {
       console.log(e.latlng); // get the coordinates
       L.marker([e.latlng.lat, e.latlng.lng], this.markerIcon).addTo(this.map);
+      this.map.setView([e.latlng.lat - .001, e.latlng.lng], 18);
     });
   }
 }
