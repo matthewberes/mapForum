@@ -9,6 +9,7 @@ import { marker } from 'leaflet';
 })
 export class MapComponent implements AfterViewInit {
   private map: any;
+  tempMarker: any;
   markerIcon = {
     icon: L.icon({
       iconSize: [25, 41],
@@ -19,6 +20,17 @@ export class MapComponent implements AfterViewInit {
       shadowUrl: "https://unpkg.com/leaflet@1.5.1/dist/images/marker-shadow.png"
     })
   };
+  tempMarkerIcon = {
+    icon: L.icon({
+      iconSize: [25, 41],
+      iconAnchor: [10, 41],
+      popupAnchor: [2, -40],
+      // specify the path here
+      iconUrl: "https://github.com/pointhi/leaflet-color-markers/blob/master/img/marker-icon-orange.png?raw=true",
+      shadowUrl: "https://unpkg.com/leaflet@1.5.1/dist/images/marker-shadow.png"
+    })
+  };
+  
 
   private initMap(): void {
     this.map = L.map('map', {
@@ -44,8 +56,14 @@ export class MapComponent implements AfterViewInit {
 
     this.map.on("click", (e: any) => {
       console.log(e.latlng); // get the coordinates
-      L.marker([e.latlng.lat, e.latlng.lng], this.markerIcon).addTo(this.map);
+      this.tempMarker = L.marker([e.latlng.lat, e.latlng.lng], this.tempMarkerIcon)
+      this.tempMarker.addTo(this.map);
       this.map.setView([e.latlng.lat - .001, e.latlng.lng], 18);
     });
+  }
+
+  deez(){
+    L.marker([this.tempMarker.getLatLng().lat, this.tempMarker.getLatLng().lng], this.markerIcon).addTo(this.map);
+    this.map.removeLayer(this.tempMarker)
   }
 }
