@@ -55,6 +55,9 @@ export class MapComponent implements AfterViewInit {
     this.initMap();
 
     this.map.on("click", (e: any) => {
+      if (this.tempMarker) {
+        this.map.removeLayer(this.tempMarker)
+      }
       console.log(e.latlng); // get the coordinates
       this.tempMarker = L.marker([e.latlng.lat, e.latlng.lng], this.tempMarkerIcon)
       this.tempMarker.addTo(this.map);
@@ -62,8 +65,9 @@ export class MapComponent implements AfterViewInit {
     });
   }
 
-  deez(){
+  confirm(){
     L.marker([this.tempMarker.getLatLng().lat, this.tempMarker.getLatLng().lng], this.markerIcon).addTo(this.map);
     this.map.removeLayer(this.tempMarker)
+    this.tempMarker = null
   }
 }
