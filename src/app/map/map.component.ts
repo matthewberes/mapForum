@@ -1,6 +1,7 @@
 import { AfterViewInit, Component } from '@angular/core';
 import * as L from 'leaflet';
 import { marker } from 'leaflet';
+import { MapService } from '../map.service';
 
 @Component({
   selector: 'app-map',
@@ -49,7 +50,7 @@ export class MapComponent implements AfterViewInit {
 
   
 
-  constructor() { }
+  constructor(public mapService: MapService) { }
 
   ngAfterViewInit(): void {
     this.initMap();
@@ -61,13 +62,22 @@ export class MapComponent implements AfterViewInit {
       console.log(e.latlng); // get the coordinates
       this.tempMarker = L.marker([e.latlng.lat, e.latlng.lng], this.tempMarkerIcon)
       this.tempMarker.addTo(this.map);
-      this.map.setView([e.latlng.lat - .001, e.latlng.lng], 18);
+      this.mapService.isTempMarkerPlaced = true;
+      this.map.setView([e.latlng.lat, e.latlng.lng], 18);
+    });
+
+    this.mapService.confirmClicked.subscribe(val => {
+      if (val) {
+        this.confirm()
+        this.mapService.confirmClicked.next(false);
+      }
     });
   }
 
   confirm(){
-    L.marker([this.tempMarker.getLatLng().lat, this.tempMarker.getLatLng().lng], this.markerIcon).addTo(this.map);
+    L.marker([this.tempMarker.getLatLng().lat, this.tempMarker.getLatLng().lng], this.markerIcon).bindPopup('<p>You are here</p>').addTo(this.map);
     this.map.removeLayer(this.tempMarker)
     this.tempMarker = null
+    this.mapService.isTempMarkerPlaced = false;
   }
 }
